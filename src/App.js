@@ -1,25 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './Login';
+import Dashboard from './Dashboard';
 
 function App() {
-  // Por enquanto, vamos apenas mostrar uma mensagem de boas-vindas.
-  // Nos prÛximos passos, adicionaremos as rotas para a tela de login, etc.
-  
-  // A vari·vel de ambiente REACT_APP_API_URL ser· configurada no Vercel.
-  const apiUrl = process.env.REACT_APP_API_URL || "API URL n„o configurada";
+  // Vamos usar o estado para guardar o token de acesso
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Ao carregar o app, verifica se j√° existe um token no armazenamento local
+  useEffect(() => {
+    const storedToken = localStorage.getItem('accessToken');
+    if (storedToken) {
+      setToken(storedToken);
+    }
+    setLoading(false); // Termina o carregamento inicial
+  }, []);
+
+  // Fun√ß√£o para salvar o token ap√≥s o login
+  const handleLogin = (newToken) => {
+    localStorage.setItem('accessToken', newToken);
+    setToken(newToken);
+  };
+
+  // Fun√ß√£o para remover o token no logout
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    setToken(null);
+  };
+
+  // Enquanto verifica o token, n√£o mostra nada para evitar piscar a tela
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>Painel de Controle da Plataforma Manus</h1>
-      <p>O "Rosto" do nosso projeto est· no ar!</p>
-      <hr />
-      <p>
-        <strong>Status do CÈrebro (Backend):</strong> A API est· configurada para ser acessada no seguinte endereÁo: 
-          
-
-        <a href={apiUrl} target="_blank" rel="noopener noreferrer">{apiUrl}</a>
-      </p>
-      <p>Se o link acima estiver correto, o prÛximo passo È conectar os dois.</p>
-    </div>
+    <Router>
+      <Routes>
+        <Route 
+          path="/login" 
+          element={
+            token ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />
+          } 
+        />
+        <Route 
+          path="/dashboard" 
+          element={
+            token ? <Dashboard onLogout={handleLogout} /> : <Navigate to="/login" />
+          } 
+        />
+        {/* Rota padr√£o: se estiver logado vai para o dashboard, sen√£o para o login */}
+        <Route 
+          path="*"
+          element={<Navigate to={token ? "/dashboard" : "/login"} />}
+        />
+      </Routes>
+    </Router>
   );
 }
 
