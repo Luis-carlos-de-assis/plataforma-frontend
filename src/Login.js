@@ -11,9 +11,34 @@ function Login({ onLogin }) {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Impede que a página recarregue ao enviar o formulário
-    setLoading(true);
-    setError('');
+  event.preventDefault();
+  setError(null);
+
+  try {
+    
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Enviando como JSON
+      },
+      // Enviando os dados como um objeto JSON
+      body: JSON.stringify({ email: username, password: password }),
+    });
+    // --- FIM DA MODIFICAÇÃO ---
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Falha no login');
+    }
+
+    const data = await response.json();
+    onLogin(data.access_token);
+
+  } catch (error) {
+    setError(error.message);
+  }
+};
+
 
     // O endpoint de token do FastAPI espera os dados em um formato especial (FormData)
     const formData = new URLSearchParams();
