@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 
-// A função onLogin é recebida do App.js para que possamos entregar o token
 function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Pega o endereço da nossa API que configuramos no Vercel
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (event) => {
@@ -19,9 +17,8 @@ function Login({ onLogin }) {
       const response = await fetch(`${apiUrl}/token`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json', // Enviando como JSON
+          'Content-Type': 'application/json',
         },
-        // Enviando os dados como um objeto JSON
         body: JSON.stringify({ email: email, password: password }),
       });
 
@@ -31,7 +28,6 @@ function Login({ onLogin }) {
       }
 
       const data = await response.json();
-      // Entregamos o token para o App.js, que vai guardar e nos redirecionar
       onLogin(data.access_token);
 
     } catch (err) {
@@ -41,7 +37,6 @@ function Login({ onLogin }) {
     }
   };
 
-  // Estilos simples para centralizar o formulário
   const styles = {
     container: {
       display: 'flex',
