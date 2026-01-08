@@ -11,58 +11,26 @@ function Login({ onLogin }) {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleSubmit = async (event) => {
-  event.preventDefault();
-  setError(null);
-
-  try {
-    
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json', // Enviando como JSON
-      },
-      // Enviando os dados como um objeto JSON
-      body: JSON.stringify({ email: username, password: password }),
-    });
-    // --- FIM DA MODIFICAÇÃO ---
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || 'Falha no login');
-    }
-
-    const data = await response.json();
-    onLogin(data.access_token);
-
-  } catch (error) {
-    setError(error.message);
-  }
-};
-
-
-    // O endpoint de token do FastAPI espera os dados em um formato especial (FormData)
-    const formData = new URLSearchParams();
-    formData.append('username', email); // O FastAPI espera o email no campo 'username'
-    formData.append('password', password);
+    event.preventDefault();
+    setError('');
+    setLoading(true);
 
     try {
       const response = await fetch(`${apiUrl}/token`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json', // Enviando como JSON
         },
-        body: formData,
+        // Enviando os dados como um objeto JSON
+        body: JSON.stringify({ email: email, password: password }),
       });
 
       if (!response.ok) {
-        // Se a resposta não for 200 (OK), lemos o erro
         const errorData = await response.json();
         throw new Error(errorData.detail || 'Falha no login');
       }
 
-      // Se o login deu certo, pegamos o token da resposta
       const data = await response.json();
-      
       // Entregamos o token para o App.js, que vai guardar e nos redirecionar
       onLogin(data.access_token);
 
