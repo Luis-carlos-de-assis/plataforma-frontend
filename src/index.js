@@ -1,10 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <div style={{ padding: '50px', textAlign: 'center', fontSize: '24px' }}>
+      Olá, Mundo! O React está renderizando.
+    </div>
   </React.StrictMode>
 );
