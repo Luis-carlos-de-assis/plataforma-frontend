@@ -13,10 +13,8 @@ function Login() {
         e.preventDefault();
         setError('');
 
-        // O backend espera os dados como 'form-data', não JSON.
-        // E espera o campo 'username', não 'email'.
         const params = new URLSearchParams();
-        params.append('username', email); // Usamos a variável 'email' mas enviamos como 'username'
+        params.append('username', email);
         params.append('password', password);
 
         try {
@@ -28,7 +26,9 @@ function Login() {
 
             if (response.data.access_token) {
                 localStorage.setItem('accessToken', response.data.access_token);
-                navigate('/dashboard'); // Redireciona para o dashboard após o login
+                // *** LINHA ADICIONADA AQUI ***
+                localStorage.setItem('userEmail', email); // Salva o email no localStorage
+                navigate('/dashboard');
             } else {
                 setError('Falha ao obter o token de acesso.');
             }
