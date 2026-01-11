@@ -72,4 +72,3 @@ function Login() {
 }
 
 export default Login;
-salva email do usuário no login 
