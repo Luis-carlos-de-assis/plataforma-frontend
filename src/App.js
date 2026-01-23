@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Cardapio from './pages/Cardapio';
+import Login from './pagina/Login';
+import Dashboard from './pagina/Dashboard';
+import Cardapio from './pagina/Cardapio';
 import './App.css';
 
 const PrivateRoute = ({ children }) => {
@@ -23,3 +23,4 @@ function App() {
 }
 
 export default App;
+        
